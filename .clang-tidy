@@ -1,0 +1,7 @@
+Checks: >
+  *,
+  -llvmlibc*,
+  -bugprone-reserved-identifier,
+  -cert-dcl51-cpp,
+  -cert-dcl37-c,
+  -fuchsia*,

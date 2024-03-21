@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [-DGPU_SUPPORT]
