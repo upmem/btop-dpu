@@ -198,7 +198,7 @@ namespace Dpu {
 	extern vector<bool> redraw;
 	extern int shown;
 	extern vector<char> shown_panels;
-	extern vector<string> dpu_names;
+	extern vector<string> rank_names;
 	extern vector<int> dpu_b_height_offsets;
 	extern long long dpu_pwr_total_max;
 
@@ -213,47 +213,20 @@ namespace Dpu {
 	};*/
 
 	//* Container for supported Dpu::*::collect() functions
-	struct dpu_info_supported {
-		bool dpu_utilization = true,
-			mem_utilization = true,
+	struct rank_info_supported {
+		bool rank_utilization = true,
 			dpu_clock = true,
-			mem_clock = true,
-			pwr_usage = true,
-			pwr_state = true,
-			temp_info = true,
-			mem_total = true,
-			mem_used = true,
-			pcie_txrx = true;
+			mem_total = true;
 	};
 
 	//* Per-device container for DPU info
-	struct dpu_info {
-		std::unordered_map<string, deque<long long>> dpu_percent = {
-			{"dpu-totals", {}},
-			{"dpu-vram-totals", {}},
-			{"dpu-pwr-totals", {}},
-		};
-		unsigned int dpu_clock_speed; // MHz
+	struct rank_info {
+		unsigned int dpu_clock_speed = 0; // MHz
 
-		long long pwr_usage; // mW
-		long long pwr_max_usage = 255000;
-		long long pwr_state;
-
-		deque<long long> temp = {0};
-		long long temp_max = 110;
-
+		bool is_owned = false;
 		long long mem_total = 0;
-		long long mem_used = 0;
-		deque<long long> mem_utilization_percent = {0}; // TODO: properly handle DPUs that can't report some stats
-		long long mem_clock_speed = 0; // MHz
 
-		long long pcie_tx = 0; // KB/s
-		long long pcie_rx = 0;
-
-		dpu_info_supported supported_functions;
-
-		// vector<proc_info> graphics_processes = {}; // TODO
-		// vector<proc_info> compute_processes = {};
+		rank_info_supported supported_functions;
 	};
 
 	namespace Upmem {
@@ -261,12 +234,12 @@ namespace Dpu {
 	}
 
 	//* Collect dpu stats and temperatures
-	auto collect(bool no_update = false) -> vector<dpu_info>&;
+	auto collect(bool no_update = false) -> vector<rank_info>&;
 
 	//* Draw contents of dpu box using <dpus> as source
-	string draw(const dpu_info& dpu, unsigned long index, bool force_redraw, bool data_same);
+	string draw(const rank_info& dpu, unsigned long index, bool force_redraw, bool data_same);
 #else
-	struct dpu_info {
+	struct rank_info {
 		bool supported = false;
 	};
 #endif

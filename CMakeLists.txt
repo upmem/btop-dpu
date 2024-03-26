@@ -20,6 +20,15 @@ include(CheckCXXCompilerFlag)
 include(CheckIncludeFileCXX)
 include(CheckIPOSupported)
 include(CMakeDependentOption)
+include(FetchContent)
+
+FetchContent_Declare(
+    flux
+    GIT_REPOSITORY https://github.com/tcbrindle/flux.git
+    GIT_TAG main # Replace with a git commit id to fix a particular revision
+)
+
+FetchContent_MakeAvailable(flux)
 
 # Make our Find<Package>.cmake files available
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
@@ -29,7 +38,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
@@ -98,7 +107,7 @@ if(ipo_supported AND BTOP_LTO)
   set_target_properties(btop PROPERTIES INTERPROCEDURAL_OPTIMIZATION ON)
 endif()
 
-target_compile_options(btop PRIVATE -Wall -Wextra -Wpedantic -ftree-vectorize)
+target_compile_options(btop PRIVATE -Wall -Wextra -Wpedantic -ftree-vectorize -fconcepts)
 
 if(BTOP_PEDANTIC)
   target_compile_options(btop PRIVATE
@@ -210,6 +219,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   target_link_libraries(btop kvm::kvm)
 endif()
 
+# Link Flux
+target_link_libraries(btop flux::flux)
 
 # Check if lowdown is installed
 find_program(LOWDOWN_EXECUTABLE lowdown)

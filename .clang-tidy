@@ -5,3 +5,9 @@ Checks: >
   -cert-dcl51-cpp,
   -cert-dcl37-c,
   -fuchsia*,
+  -abseil*,
+  -altera*,
+
+CheckOptions:
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: "ec"

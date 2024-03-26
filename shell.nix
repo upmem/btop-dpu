@@ -1,7 +1,9 @@
 with import <nixpkgs> {};
-pkgs.mkShell {
+gcc13Stdenv.mkDerivation {
+  name = "btop-gcc13-env";
   buildInputs = [
-    clang-tools
+    clang-tools_17
+    llvmPackages_17.libcxx
     bear
     cmake
     nil
